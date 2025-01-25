@@ -1,18 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-// export default {
-//     purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-//     darkMode: false, // or 'media' or 'class'
-//     content: ["./index.html",
-//         "./src/**/*.{vue,js,ts,jsx,tsx}",
-//     ],
-//     theme: {
-//         extend: {},
-//     },
-//     plugins: [],
-// }
-//
+
 module.exports = {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+
   darkMode: "class",
 
   theme: {
@@ -62,11 +52,6 @@ module.exports = {
         60: "0.63",
         80: "0.80",
         100: "1",
-
-        30: "0.30",
-        50: "0.54",
-        70: "0.70",
-        90: "0.90",
       },
 
       boxShadow: {
@@ -79,8 +64,6 @@ module.exports = {
           "0px 10px 20px 0px rgba(3,3,3,0.1), 0px 3px 6px 0px rgba(3,3,3,0.1)",
         "shadow-xl":
           "0px 15px 25px 0px rgba(3,3,3,0.1), 0px 5px 10px 0px rgba(3,3,3,0.1)",
-        cxl:
-          "0 2px 5px rgba(193, 202, 255, 0.5), 2px 0 5px rgba(193, 202, 255, 0.5), -2px 0 5px rgba(193, 202, 255, 0.5), 0 -2px 5px rgba(193, 202, 255, 0.5)",
       },
 
       keyframes: {
@@ -103,16 +86,16 @@ module.exports = {
         gradient: "gradient 15s ease infinite",
       },
 
-      // opacity: {
-      //   30: "0.30",
-      //   50: "0.54",
-      //   70: "0.70",
-      //   90: "0.90",
-      // },
+      opacity: {
+        30: "0.30",
+        50: "0.54",
+        70: "0.70",
+        90: "0.90",
+      },
 
-      // boxShadow: {
-      //   cxl: "0 2px 5px rgba(193, 202, 255, 0.5), 2px 0 5px rgba(193, 202, 255, 0.5), -2px 0 5px rgba(193, 202, 255, 0.5), 0 -2px 5px rgba(193, 202, 255, 0.5)",
-      // },
+      boxShadow: {
+        cxl: "0 2px 5px rgba(193, 202, 255, 0.5), 2px 0 5px rgba(193, 202, 255, 0.5), -2px 0 5px rgba(193, 202, 255, 0.5), 0 -2px 5px rgba(193, 202, 255, 0.5)",
+      },
     },
   },
 

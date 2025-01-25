@@ -6,24 +6,24 @@
       <h2 class="text-2xl font-bold mb-4">
         채팅방: {{ pageStore.chatRoom.name }}
       </h2>
-      <div
-          class="flex-1 bg-white p-6 rounded shadow overflow-y-auto mb-4  max-h-[calc(100vh-190px)]"
-           ref="messageContainer"
-      >
-        <div class="overflow-auto"
-             v-if="store.status !== 'loading'"
-             v-for="(message, index) in chatConversation.messageList.slice().reverse()"
-             :key="index"
-        >
-          <TimelineDivider :date="message.sendDate" v-if="isDateChanged(index, chatConversation.messageList.slice().reverse())"/>
-          <Message
-              :message="message"
-              :self="isSelf(message)"
-              :follow-up="isFollowUp(index, index - 1)"
-              :divider="isSenderSwitched(index, chatConversation.messageList.slice().reverse())"
-          />
-        </div>
-      </div>
+<!--      <div-->
+<!--          class="flex-1 bg-white p-6 rounded shadow overflow-y-auto mb-4  max-h-[calc(100vh-190px)]"-->
+<!--           ref="messageContainer"-->
+<!--      >-->
+<!--        <div class="overflow-auto"-->
+<!--             v-for="(message, index) in chatConversation.messageList.slice().reverse()"-->
+<!--             :key="index"-->
+<!--        >-->
+<!--          <TimelineDivider :date="message.sendDate" v-if="isDateChanged(index, chatConversation.messageList.slice().reverse())"/>-->
+<!--          <Message-->
+<!--              :message="message"-->
+<!--              :self="isSelf(message)"-->
+<!--              :follow-up="isFollowUp(index, index - 1)"-->
+<!--              :divider="isSenderSwitched(index, chatConversation.messageList.slice().reverse())"-->
+<!--          />-->
+<!--        </div>-->
+<!--      </div>-->
+      <ChatMiddle />
       <ChatBottom :selectedChatRoom="pageStore.chatRoom"/>
     </div>
     <div v-else class="flex items-center justify-center h-full">
@@ -35,24 +35,23 @@
 import { nextTick, onMounted, ref, watch} from "vue";
 import axios from "axios";
 import ChatBottom from "~components/chat/ChatBottom/ChatBottom.vue";
-import useStore from "~store/store.ts";
-import Message from "~components/chat/ChatMiddle/Message/Message.vue";
 import usePageStore from "~store/usePageStore.ts";
 import {storeToRefs} from "pinia";
 import useUserInfoStore from "~store/useUserInfoStore.ts";
-import {IChatMessage} from "~types/IChatMessage.ts";
 import useChatConversationStore from "~store/useChatConversationStore.ts";
+import ChatMiddle from "~components/chat/ChatMiddle/ChatMiddle.vue";
 import TimelineDivider from "~components/chat/ChatMiddle/Message/TimelineDivider.vue";
+import Message from "~components/chat/ChatMiddle/Message/Message.vue";
+import {IChatMessage} from "~types/IChatMessage.ts";
 
 const pageStore = usePageStore();
-const userInfoStore = useUserInfoStore();
-const chatMessageStore = useChatConversationStore();
-
-const {chatConversation} = storeToRefs(chatMessageStore);
 const {chatRoom} = storeToRefs(pageStore);
-const {userInfo} = storeToRefs(userInfoStore)
-// const messegeListLength = computed(() => messageList.value.length)
 
+const userInfoStore = useUserInfoStore();
+const {userInfo} = storeToRefs(userInfoStore)
+
+const chatMessageStore = useChatConversationStore();
+const {chatConversation} = storeToRefs(chatMessageStore);
 
 axios.defaults.baseURL = "http://127.0.0.1:8080";
 
@@ -67,16 +66,6 @@ watch(chatRoom, async (newChatRoom, oldChatRoom) => {
 onMounted(async () => {
   scrollToBottom(); // 초기화 시 스크롤
 });
-
-
-const getCurrentDate = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${year}-${month}-${day}`;
-};
 
 const messageContainer = ref<HTMLDivElement | null>(null); // ref 추가
 
@@ -104,22 +93,6 @@ const scrollToBottom = () => {
   }
 };
 
-const isSelf = (message: IChatMessage): boolean => {
-  return Boolean(userInfo.value.userId && message.userId === userInfo.value.userId);
-};
-
-
-const store = useStore();
-
-const messageDivide = (sendDate: string): boolean => {
-
-  if (sendDate === getCurrentDate()) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
 const isDateChanged = (index: number, list: IChatMessage[]): boolean => {
   if (index - 1 < 0) {
     return false;
@@ -130,6 +103,10 @@ const isDateChanged = (index: number, list: IChatMessage[]): boolean => {
   } else {
     return false;
   }
+};
+
+const isSelf = (message: IChatMessage): boolean => {
+  return Boolean(userInfo.value.userId && message.userId === userInfo.value.userId);
 };
 
 const isSenderSwitched = (index: number, list: IChatMessage[]): boolean => {
@@ -154,6 +131,7 @@ const isFollowUp = (index: number, previousIndex: number): boolean => {
     return true;
   }
 };
+
 
 </script>
 

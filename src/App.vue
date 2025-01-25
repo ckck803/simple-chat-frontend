@@ -1,22 +1,30 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <router-view/>
+  <div class="bg-white dark:bg-gray-800 transition-colors duration-500" :style="{ height: height }">
+    <router-view/>
+  </div>
 </template>
 
+<script setup lang="ts">
+// and add the resize event when the component mounts.
+import {onMounted, onUnmounted, ref} from "vue";
+
+// the app height
+const height = ref(`${window.innerHeight}px`);
+
+// change the app height to the window hight.
+const resizeWindow = () => {
+  height.value = `${window.innerHeight}px`;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", resizeWindow);
+});
+
+// remove the event when un-mounting the component.
+onUnmounted(() => {
+  window.removeEventListener("resize", resizeWindow);
+});
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
 </style>
