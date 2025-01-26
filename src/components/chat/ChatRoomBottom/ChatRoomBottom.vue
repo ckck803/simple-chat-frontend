@@ -154,7 +154,7 @@ import {
   PaperClipIcon,
   XCircleIcon,
 } from "@heroicons/vue/24/outline";
-import ReplyMessage from "~components/chat/ChatBottom/ReplyMessage.vue";
+import ReplyMessage from "~components/chat/ChatRoomBottom/ReplyMessage.vue";
 import Typography from "~ui/data-display/Typography.vue";
 import IconButton from "~ui/inputs/IconButton.vue";
 import ScaleTransition from "~ui/transitions/ScaleTransition.vue";

@@ -114,14 +114,7 @@ watch(chatRoomList, () => {
 
 onMounted(async () => {
   await getChatRoomList();
-  subscribeChatRoom(chatRoomList);
-  chatRoomList.value.forEach((chatRoom) => {
-    if (!messages.value[chatRoom.roomId]) {
-      messages.value[chatRoom.roomId] = [];
-    }
-
-    subscribe(chatRoom.roomId, messages, addMessage);
-  });
+  await subscribeChatRoom(chatRoomList);
 });
 </script>
 

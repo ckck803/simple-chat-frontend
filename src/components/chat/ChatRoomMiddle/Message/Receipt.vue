@@ -13,7 +13,7 @@
 
 <script setup lang="ts">
 import { CheckIcon, ClockIcon } from "@heroicons/vue/24/outline";
-import DoubleChecks from "~components/chat/ChatMiddle/Message/DoubleChecks.vue";
+import DoubleChecks from "~components/chat/ChatRoomMiddle/Message/DoubleChecks.vue";
 
 const props = defineProps<{
   state: string;

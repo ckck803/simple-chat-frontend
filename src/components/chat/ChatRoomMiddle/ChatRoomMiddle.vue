@@ -1,18 +1,17 @@
 <template>
-  <div
-      class="flex-1 bg-white p-6 rounded shadow overflow-y-auto mb-4  max-h-[calc(100vh-190px)]"
-      ref="messageContainer"
-  >
-<!--    <div class="overflow-auto"-->
-<!--         v-if="store.status !== 'loading'"-->
-<!--         v-for="(message, index) in chatConversation.messageList.slice().reverse()"-->
-<!--         :key="index"-->
-<!--    >-->
-    <div class="overflow-auto"
-         v-for="(message, index) in chatConversation.messageList.slice().reverse()"
-         :key="index"
+    <div
+        class="flex flex-col grow bg-white p-6 rounded shadow overflow-y-auto mb-4 "
+        ref="messageContainer"
     >
-      <TimelineDivider :date="message.sendDate" v-if="isDateChanged(index, chatConversation.messageList.slice().reverse())"/>
+<!--  <div-->
+<!--      class="grow px-5 py-5 flex flex-col overflow-y-scroll scrollbar-hidden"-->
+<!--  >-->
+    <div
+        v-for="(message, index) in chatConversation.messageList.slice().reverse()"
+        :key="index"
+    >
+      <TimelineDivider :date="message.sendDate"
+                       v-if="isDateChanged(index, chatConversation.messageList.slice().reverse())"/>
       <Message
           :message="message"
           :self="isSelf(message)"
@@ -23,8 +22,8 @@
   </div>
 </template>
 <script setup lang="ts">
-import Message from "~components/chat/ChatMiddle/Message/Message.vue";
-import TimelineDivider from "~components/chat/ChatMiddle/Message/TimelineDivider.vue";
+import Message from "~components/chat/ChatRoomMiddle/Message/Message.vue";
+import TimelineDivider from "~components/chat/ChatRoomMiddle/Message/TimelineDivider.vue";
 import useChatConversationStore from "~store/useChatConversationStore.ts";
 import {storeToRefs} from "pinia";
 import {IChatMessage} from "~types/IChatMessage.ts";

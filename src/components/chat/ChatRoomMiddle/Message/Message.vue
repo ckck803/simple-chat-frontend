@@ -97,12 +97,12 @@ import linkifyStr from "linkify-string";
 import {inject, ref} from "vue";
 import {IConversation} from "~types/types.ts";
 import Typography from "~ui/data-display/Typography.vue";
-import Receipt from "~components/chat/ChatMiddle/Message/Receipt.vue";
+import Receipt from "~components/chat/ChatRoomMiddle/Message/Receipt.vue";
 import {getMessageById} from "~utils/utils.ts";
 import {IChatMessage} from "~types/IChatMessage.ts";
 import defaultImage from '~assets/image/default_image.jpg'
-import Attachments from "~components/chat/ChatMiddle/Message/Attachments.vue";
-import MessageContextMenu from "~components/chat/ChatMiddle/Message/MessageContextMenu.vue";
+import Attachments from "~components/chat/ChatRoomMiddle/Message/Attachments.vue";
+import MessageContextMenu from "~components/chat/ChatRoomMiddle/Message/MessageContextMenu.vue";
 import useChatConversationStore from "~store/useChatConversationStore.ts";
 import {storeToRefs} from "pinia";
 
