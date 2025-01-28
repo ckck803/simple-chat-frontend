@@ -47,7 +47,7 @@
           <div class="flex">
             <!--download button / icons-->
             <button
-                c
+                @click="downloadFile(file)"
                 class="w-8 h-8 mr-4 flex justify-center rounded-full outline-none items-center duration-200"
                 :class="
                         props.self
@@ -152,7 +152,7 @@
         <!--        </button>-->
 
 
-                <!--video-->
+        <!--video-->
         <!--        <button-->
         <!--            v-if="attachment.type === 'video'"-->
         <!--            @click="openCarouselWithAttachment(attachment.id)"-->
@@ -186,7 +186,7 @@
         <!--              </span>-->
         <!--            </div>-->
 
-                    <!--second video-->
+        <!--second video-->
         <!--            <div-->
         <!--                v-else-if="isNumber(attachment, 2) && numberOfMedia < 3"-->
         <!--                class="w-full h-full flex justify-center items-center rounded bg-black bg-opacity-20 hover:bg-opacity-10 transition duration-200"-->
@@ -211,11 +211,11 @@
       </div>
 
       <!--carousel modal-->
-<!--      <Carousel-->
-<!--          :open="openCarousel"-->
-<!--          :starting-id="(selectedAttachmentId as number)"-->
-<!--          :close-carousel="closeCarousel"-->
-<!--      />-->
+      <!--      <Carousel-->
+      <!--          :open="openCarousel"-->
+      <!--          :starting-id="(selectedAttachmentId as number)"-->
+      <!--          :close-carousel="closeCarousel"-->
+      <!--      />-->
     </div>
   </div>
 </template>
@@ -368,8 +368,8 @@ const containsMedia = computed(() => {
 const numberOfMedia = computed(() => {
   let counter = 0;
 
-  if (props.urlList) {
-    for (let url of props.urlList) {
+  if (props.fileList) {
+    for (let file of props.fileList) {
       counter += 1;
 
     }
@@ -379,22 +379,22 @@ const numberOfMedia = computed(() => {
 });
 
 const isNumber = (
-    cntUrl: string,
+    fileName: string,
     number: number,
     largerThan?: boolean
 ) => {
   let counter = 0;
   let caseCorrect = false;
 
-  if (props.urlList) {
-    for (let url of props.urlList) {
+  if (props.fileList) {
+    for (let file of props.fileList) {
       counter += 1;
       if (largerThan) {
-        if (url === cntUrl && counter > number) {
+        if (file.fileName === fileName && counter > number) {
           caseCorrect = true;
         }
       } else {
-        if (url === cntUrl && counter === number) {
+        if (file.fileName === fileName && counter === number) {
           caseCorrect = true;
         }
       }
@@ -422,16 +422,28 @@ const isNumber = (
   return caseCorrect;
 };
 
-onMounted(async () => {
-  // props.urlList.forEach(url => {
-  //   axios.get(`http://localhost:8080/api/file/${url}`).then((res) => {
-  //     console.log("res.data =====> %o",res.data);
-  //
-  //   });
-  // })
+const downloadFile = async (file: IFileInfo) => {
+  try {
+    const response = await axios.get(`http://localhost:8080/api/file/${file.fileName}`, {
+      responseType: "blob", // Blob 형태로 응답받기
+    });
 
-  // getFileList(axios.get("http://localhost:8080/api/file/"));
-})
+    const blob = new Blob([response.data], {type: response.data.type});
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", file.fileName);
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("파일 다운로드 실패:", error);
+  }
+}
 
 </script>
 
