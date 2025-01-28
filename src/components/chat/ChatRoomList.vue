@@ -55,7 +55,7 @@ import usePageStore from "~store/usePageStore.ts";
 import {IChatRoom} from "~types/IChatRoom.ts";
 import {subscribe, subscribeChatRoom} from "~utils/useStomp.ts";
 import {IChatMessage} from "~types/IChatMessage.ts";
-import useChatConversationStore from "~store/useChatConversationStore.ts";
+import useChatRoomStore from "~store/useChatRoomStore.ts";
 import {publishChatRoom} from "~utils/useStomp.ts";
 import {IChatRoomProtocol} from "~types/IChatRoomProtocol.ts";
 import {TrashIcon} from "@heroicons/vue/24/outline";
@@ -68,7 +68,7 @@ const roomName = ref("");
 const selectedChatRoom = ref();
 
 const pageStore = usePageStore();
-const {addMessage} = useChatConversationStore();
+const {addMessage} = useChatRoomStore();
 
 axios.defaults.baseURL = "http://127.0.0.1:8080";
 

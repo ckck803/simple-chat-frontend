@@ -7,9 +7,7 @@ import {IChatConversation} from "~types/IChatConversation.ts";
 
 const PINIA_KEY = 'chat-maessage-store';
 
-const useChatConversationStore = defineStore(PINIA_KEY, () => {
-  // const messageList = ref<IChatMessage[]>([]);
-
+const useChatRoomStore = defineStore(PINIA_KEY, () => {
   const initialConversation = {
     messageList: [],
   }
@@ -47,4 +45,4 @@ const useChatConversationStore = defineStore(PINIA_KEY, () => {
   }
 })
 
-export default useChatConversationStore;
+export default useChatRoomStore;

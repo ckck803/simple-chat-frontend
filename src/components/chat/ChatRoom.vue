@@ -1,26 +1,25 @@
 <template>
-  <!--  <div class="w-full p-6 px-20">-->
-  <!--    <div v-if="pageStore.chatRoom" class="flex flex-col h-full scrollbar-hidden">-->
-  <!--      <h2 class="text-2xl font-bold mb-4">-->
-  <!--        채팅방: {{ pageStore.chatRoom.name }}-->
-  <!--      </h2>-->
-  <!--      <ChatRoomMiddle />-->
-  <!--      <ChatRoomBottom :selectedChatRoom="pageStore.chatRoom"/>-->
-  <!--    </div>-->
-  <!--    <div v-else class="flex items-center justify-center h-full">-->
-  <!--      <p class="text-gray-500">Select a chat room to start chatting.</p>-->
-  <!--    </div>-->
-  <!--  </div>-->
-  <div class="flex flex-col h-full px-28">
-    <div v-if="pageStore.chatRoom" class="flex flex-col h-full scrollbar-hidden">
-      <h2 class="text-2xl font-bold mb-4">
-        채팅방: {{ pageStore.chatRoom.name }}
-      </h2>
-      <ChatMiddle/>
-      <ChatBottom :selectedChatRoom="pageStore.chatRoom"/>
+  <div class="flex flex-col h-full">
+    <div class="flex-1 flex-col h-full" v-if="status !== 'loading'">
+      <div class="flex flex-col h-full px-28 py-5">
+        <div v-if="pageStore.chatRoom" class="flex flex-col h-full scrollbar-hidden shadow rounded">
+          <ChatRoomHeader class="border-b border-b-gray-200"
+              :select-all="selectAll"
+              :select-mode="selectMode"
+              :handle-select-all="handleSelectAll"
+              :handle-deselect-all="handleDeselectAll"
+              :handle-close-select="handleCloseSelect"
+          />
+          <ChatMiddle/>
+          <ChatBottom class="border-t border-t-gray-200" :selectedChatRoom="pageStore.chatRoom"/>
+        </div>
+        <div v-else class="flex items-center justify-center h-full">
+          <p class="text-gray-500">Select a chat room to start chatting.</p>
+        </div>
+      </div>
     </div>
-    <div v-else class="flex items-center justify-center h-full">
-      <p class="text-gray-500">Select a chat room to start chatting.</p>
+    <div v-else class="flex flex-col h-full">
+      <Loading/>
     </div>
   </div>
 </template>
@@ -30,16 +29,45 @@ import axios from "axios";
 import ChatBottom from "~components/chat/ChatRoomBottom/ChatRoomBottom.vue";
 import usePageStore from "~store/usePageStore.ts";
 import {storeToRefs} from "pinia";
-import useChatConversationStore from "~store/useChatConversationStore.ts";
+import useChatRoomStore from "~store/useChatRoomStore.ts";
 import ChatMiddle from "~components/chat/ChatRoomMiddle/ChatRoomMiddle.vue";
+import Loading from "~components/loading/Loading.vue";
+import ChatRoomHeader from "~components/chat/ChatRoomHeader/ChatRoomHeader.vue";
 
 const pageStore = usePageStore();
-const {chatRoom} = storeToRefs(pageStore);
+const {chatRoom, status} = storeToRefs(pageStore);
 
-const chatMessageStore = useChatConversationStore();
+const chatMessageStore = useChatRoomStore();
 const {chatConversation} = storeToRefs(chatMessageStore);
 
 axios.defaults.baseURL = "http://127.0.0.1:8080";
+
+// determines whether select mode is enabled.
+const selectMode = ref(false);
+// determines whether all the messages are selected or not.
+const selectAll = ref(false);
+// (event) select all messages.
+const handleSelectAll = () => {
+  // if (activeConversation.value) {
+  //   const messages = activeConversation.value.messages.map(
+  //       (message) => message.id
+  //   );
+  //   selectedMessages.value = messages;
+  //   selectAll.value = true;
+  // }
+};
+// (event) remove the selected messages.
+const handleDeselectAll = () => {
+  selectAll.value = false;
+  // selectedMessages.value = [];
+};
+
+// (event handle close Select)
+const handleCloseSelect = () => {
+  selectMode.value = false;
+  selectAll.value = false;
+  // selectedMessages.value = [];
+};
 
 // chatRoom이 변경될 때마다 getChatRoomMessages 호출
 watch(chatRoom, async (newChatRoom, oldChatRoom) => {
@@ -51,12 +79,12 @@ watch(chatRoom, async (newChatRoom, oldChatRoom) => {
 
 onMounted(async () => {
   scrollToBottom(); // 초기화 시 스크롤
+  status.value = "success";
 });
 
 const messageContainer = ref<HTMLDivElement | null>(null); // ref 추가
 
 // chatRoom이 변경될 때마다 getChatRoomMessages 호출
-
 watch(chatRoom, async (newChatRoom, oldChatRoom) => {
   if (newChatRoom !== oldChatRoom) {
     console.log("채팅방 변경");

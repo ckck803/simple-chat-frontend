@@ -2,19 +2,20 @@
   <div>
     <div class="flex">
       <div
-          v-for="(url, index) in urlList"
+          v-for="(file, index) in fileList"
           :key="index"
           class="mr-2 flex items-end"
           :class="{ 'mt-4': true }"
       >
         <!--image-->
         <button
+            v-if="file.fileType ==='image'"
             class="outline-none"
-            @click="openCarouselWithAttachment(url)"
+            @click="openCarouselWithAttachment(file.fileName)"
         >
           <div
-              v-if="!isNumber(url, 2, true)"
-              :style="{ backgroundImage: `url(http://localhost:8080/api/file/${url})` }"
+              v-if="!isNumber(file.fileName, 2, true)"
+              :style="{ backgroundImage: `url(http://localhost:8080/api/file/${file.fileName})` }"
               class="rounded bg-cover bg-center"
               :class="
               numberOfMedia === 1
@@ -28,18 +29,89 @@
             "
           >
             <div
-                v-if="isNumber(url, 1)"
+                v-if="isNumber(file.fileName, 1)"
                 class="w-full h-full flex justify-center items-center rounded bg-black bg-opacity-20 hover:bg-opacity-10 transition duration-200"
             ></div>
             <!--more images overlay-->
             <div
-                v-if="isNumber(url, 2) && numberOfMedia > 2"
+                v-if="isNumber(file.fileName, 2) && numberOfMedia > 2"
                 class="w-full h-full flex items-center justify-center rounded bg-black bg-opacity-40 text-white hover:bg-opacity-10 transition duration-200"
             >
-              {{ (props.urlList as []).length - 1 }}+
+              {{ (props.fileList as []).length - 1 }}+
             </div>
           </div>
         </button>
+
+        <!--file-->
+        <div v-if="file.fileType === 'file' && !containsMedia">
+          <div class="flex">
+            <!--download button / icons-->
+            <button
+                c
+                class="w-8 h-8 mr-4 flex justify-center rounded-full outline-none items-center duration-200"
+                :class="
+                        props.self
+                          ? ['bg-indigo-300']
+                          : [
+                              'bg-indigo-50',
+                              'hover:bg-indigo-100',
+                              'active:bg-indigo-200',
+                              'dark:bg-gray-400',
+                              'dark:hover:bg-gray-300',
+                              'dark:focus:bg-gray-300',
+                              'dark:active:bg-gray-200',
+                            ]
+                      "
+            >
+              <ArrowDownTrayIcon
+                  class="stroke-2 h-5 w-5"
+                  :class="
+                          props.self
+                            ? ['text-white']
+                            : ['text-blue-500', 'dark:text-gray-50']
+                        "
+              />
+            </button>
+
+            <div class="flex flex-col justify-center">
+              <Typography
+                  variant="heading-2"
+                  :no-color="true"
+                  class="mb-3"
+                  :class="
+                          props.self
+                            ? ['text-black opacity-50 dark:text-white dark:opacity-70 ']
+                            : [
+                                'text-black',
+                                'opacity-50',
+                                'dark:text-white',
+                                'dark:opacity-70',
+                              ]
+                        "
+              >
+                {{ file.fileName }}
+              </Typography
+              >
+
+              <Typography
+                  variant="body-2"
+                  :no-color="true"
+                  :class="
+                          props.self
+                            ? ['text-black opacity-60 dark:text-white dark:opacity-70']
+                            : [
+                                'text-black',
+                                'opacity-50',
+                                'dark:text-white',
+                                'dark:opacity-70',
+                              ]
+                        "
+              >
+                {{ file.fileSize }}
+              </Typography>
+            </div>
+          </div>
+        </div>
 
         <!--image-->
         <!--        <button-->
@@ -80,7 +152,7 @@
         <!--        </button>-->
 
 
-        <!--        &lt;!&ndash;video&ndash;&gt;-->
+                <!--video-->
         <!--        <button-->
         <!--            v-if="attachment.type === 'video'"-->
         <!--            @click="openCarouselWithAttachment(attachment.id)"-->
@@ -114,7 +186,7 @@
         <!--              </span>-->
         <!--            </div>-->
 
-        <!--            &lt;!&ndash;second video&ndash;&gt;-->
+                    <!--second video-->
         <!--            <div-->
         <!--                v-else-if="isNumber(attachment, 2) && numberOfMedia < 3"-->
         <!--                class="w-full h-full flex justify-center items-center rounded bg-black bg-opacity-20 hover:bg-opacity-10 transition duration-200"-->
@@ -136,84 +208,14 @@
         <!--          </div>-->
         <!--        </button>-->
 
-        <!--file-->
-        <!--        <div v-if="attachment.type === 'file' && !containsMedia">-->
-        <!--          <div class="flex">-->
-        <!--            &lt;!&ndash;download button / icons&ndash;&gt;-->
-        <!--            <button-->
-        <!--                c-->
-        <!--                class="w-8 h-8 mr-4 flex justify-center rounded-full outline-none items-center duration-200"-->
-        <!--                :class="-->
-        <!--                props.self-->
-        <!--                  ? ['bg-indigo-300']-->
-        <!--                  : [-->
-        <!--                      'bg-indigo-50',-->
-        <!--                      'hover:bg-indigo-100',-->
-        <!--                      'active:bg-indigo-200',-->
-        <!--                      'dark:bg-gray-400',-->
-        <!--                      'dark:hover:bg-gray-300',-->
-        <!--                      'dark:focus:bg-gray-300',-->
-        <!--                      'dark:active:bg-gray-200',-->
-        <!--                    ]-->
-        <!--              "-->
-        <!--            >-->
-        <!--              <ArrowDownTrayIcon-->
-        <!--                  class="stroke-2 h-5 w-5"-->
-        <!--                  :class="-->
-        <!--                  props.self-->
-        <!--                    ? ['text-white']-->
-        <!--                    : ['text-blue-500', 'dark:text-gray-50']-->
-        <!--                "-->
-        <!--              />-->
-        <!--            </button>-->
-
-        <!--            <div class="flex flex-col justify-center">-->
-        <!--              <Typography-->
-        <!--                  variant="heading-2"-->
-        <!--                  :no-color="true"-->
-        <!--                  class="mb-3"-->
-        <!--                  :class="-->
-        <!--                  props.self-->
-        <!--                    ? ['text-black opacity-50 dark:text-white dark:opacity-70 ']-->
-        <!--                    : [-->
-        <!--                        'text-black',-->
-        <!--                        'opacity-50',-->
-        <!--                        'dark:text-white',-->
-        <!--                        'dark:opacity-70',-->
-        <!--                      ]-->
-        <!--                "-->
-        <!--              >-->
-        <!--                {{ attachment.name }}-->
-        <!--              </Typography-->
-        <!--              >-->
-
-        <!--              <Typography-->
-        <!--                  variant="body-2"-->
-        <!--                  :no-color="true"-->
-        <!--                  :class="-->
-        <!--                  props.self-->
-        <!--                    ? ['text-black opacity-60 dark:text-white dark:opacity-70']-->
-        <!--                    : [-->
-        <!--                        'text-black',-->
-        <!--                        'opacity-50',-->
-        <!--                        'dark:text-white',-->
-        <!--                        'dark:opacity-70',-->
-        <!--                      ]-->
-        <!--                "-->
-        <!--              >-->
-        <!--                {{ attachment.size }}-->
-        <!--              </Typography>-->
-        <!--            </div>-->
-        <!--          </div>-->
-        <!--        </div>-->
       </div>
 
       <!--carousel modal-->
-      <Carousel
-          :open="openCarousel"
-          :starting-id="(selectedAttachmentId as number)"
-          :close-carousel="closeCarousel"
-      />
+<!--      <Carousel-->
+<!--          :open="openCarousel"-->
+<!--          :starting-id="(selectedAttachmentId as number)"-->
+<!--          :close-carousel="closeCarousel"-->
+<!--      />-->
     </div>
   </div>
 </template>
@@ -253,6 +255,7 @@ import Typography from "~ui/data-display/Typography.vue";
 import Carousel from "~ui/data-display/Carousel/Carousel.vue";
 import axios from "axios";
 import {reset} from "linkifyjs";
+import {IFileInfo} from "~types/IFileInfo.ts";
 
 // const props = defineProps<{
 //   message: IMessage;
@@ -260,11 +263,13 @@ import {reset} from "linkifyjs";
 // }>();
 
 const props = defineProps<{
-  urlList: [];
+  fileList: IFileInfo[];
   self?: boolean;
 }>();
 
+
 onMounted(() => {
+  // console.log("fileList ====> %o", props.fileList)
 })
 
 // const imageList = ref([]);
@@ -304,14 +309,6 @@ const closeCarousel = () => {
 };
 
 // // check if the message contians images or videos
-// const containsMedia = computed(() => {
-//   if (props.message.attachments) {
-//     for (let attachment of props.message.attachments) {
-//       if (["image", "video"].includes(attachment.type)) return true;
-//     }
-//   }
-//   return false;
-// });
 //
 // // number of videos attached to this message.
 // const numberOfMedia = computed(() => {
@@ -357,6 +354,15 @@ const closeCarousel = () => {
 //
 //   return caseCorrect;
 // };
+
+const containsMedia = computed(() => {
+  if (props.fileList) {
+    for (let file of props.fileList) {
+      if (["image", "video"].includes(file.fileType)) return true;
+    }
+  }
+  return false;
+});
 
 // number of videos attached to this message.
 const numberOfMedia = computed(() => {
@@ -415,5 +421,17 @@ const isNumber = (
 
   return caseCorrect;
 };
+
+onMounted(async () => {
+  // props.urlList.forEach(url => {
+  //   axios.get(`http://localhost:8080/api/file/${url}`).then((res) => {
+  //     console.log("res.data =====> %o",res.data);
+  //
+  //   });
+  // })
+
+  // getFileList(axios.get("http://localhost:8080/api/file/"));
+})
+
 </script>
 

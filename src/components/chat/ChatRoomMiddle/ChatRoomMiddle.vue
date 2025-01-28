@@ -1,11 +1,12 @@
 <template>
-    <div
-        class="flex flex-col grow bg-white p-6 rounded shadow overflow-y-auto mb-4 "
-        ref="messageContainer"
-    >
-<!--  <div-->
-<!--      class="grow px-5 py-5 flex flex-col overflow-y-scroll scrollbar-hidden"-->
-<!--  >-->
+<!--    <div-->
+<!--        class="flex flex-col grow bg-white p-6 rounded shadow overflow-y-auto mb-4 scrollbar-hidden"-->
+<!--        ref="messageContainer"-->
+<!--    >-->
+  <div
+      class="flex flex-col grow bg-white p-6 overflow-y-auto mb-4 scrollbar-hidden"
+      ref="messageContainer"
+  >
     <div
         v-for="(message, index) in chatConversation.messageList.slice().reverse()"
         :key="index"
@@ -24,7 +25,7 @@
 <script setup lang="ts">
 import Message from "~components/chat/ChatRoomMiddle/Message/Message.vue";
 import TimelineDivider from "~components/chat/ChatRoomMiddle/Message/TimelineDivider.vue";
-import useChatConversationStore from "~store/useChatConversationStore.ts";
+import useChatRoomStore from "~store/useChatRoomStore.ts";
 import {storeToRefs} from "pinia";
 import {IChatMessage} from "~types/IChatMessage.ts";
 import usePageStore from "~store/usePageStore.ts";
@@ -37,7 +38,7 @@ const {chatRoom} = storeToRefs(pageStore);
 const userInfoStore = useUserInfoStore();
 const {userInfo} = storeToRefs(userInfoStore)
 
-const chatMessageStore = useChatConversationStore();
+const chatMessageStore = useChatRoomStore();
 const {chatConversation} = storeToRefs(chatMessageStore);
 // const messageContainer = ref<HTMLDivElement | null>(null); // ref 추가
 

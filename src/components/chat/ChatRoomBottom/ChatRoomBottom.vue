@@ -142,9 +142,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import type {Ref} from "vue";
+import {Ref, watch} from "vue";
 
-import {ref, inject, onMounted} from "vue";
+import {ref, onMounted} from "vue";
 
 import {
   CheckIcon,
@@ -161,21 +161,32 @@ import ScaleTransition from "~ui/transitions/ScaleTransition.vue";
 import EmojiPicker from "~ui/inputs/EmojiPicker/EmojiPicker.vue";
 import Textarea from "~ui/inputs/Textarea.vue";
 import {publish} from "~utils/useStomp.ts";
-import {IChatRoom} from "~types/IChatRoom.ts";
 import AttachmentsModal from "~components/modals/AttachmentsModal/AttachmentsModal.vue";
 import useUserInfoStore from "~store/useUserInfoStore.ts";
 import Button from "~ui/inputs/Button.vue";
 import {storeToRefs} from "pinia";
-import useChatConversationStore from "~store/useChatConversationStore.ts";
+import useChatRoomStore from "~store/useChatRoomStore.ts";
 import {IChatMessage} from "~types/IChatMessage.ts";
+import usePageStore from "~store/usePageStore.ts";
 
 
 const userInfoStore = useUserInfoStore();
 const {userInfo} = storeToRefs(userInfoStore);
-const {selectedChatRoom} = defineProps<{ selectedChatRoom: IChatRoom }>();
+
+const pageStore = usePageStore();
+const {chatRoomDraft} = usePageStore();
+const {chatRoom} = storeToRefs(pageStore);
 
 function sendMessage() {
   if (newMessage.value.trim().length == 0) {
+    return;
+  }
+
+  if(userInfo.value.userId === ""){
+    alert("로그인이 필요합니다.")
+  }
+
+  if (!chatRoom.value) {
     return;
   }
 
@@ -184,7 +195,7 @@ function sendMessage() {
 
   const message:IChatMessage = {
     userId: userInfo.value.userId,
-    roomId: selectedChatRoom.roomId,
+    roomId: chatRoom.value.roomId,
     message: newMessage.value,
     sender: userInfo.value.username,
     sendDate: cntDate,
@@ -216,7 +227,7 @@ const getCurrentTime = () => {
 // const store = useStore();
 // const activeConversation = <IConversation>inject("activeConversation");
 
-const chatMessageStore = useChatConversationStore();
+const chatMessageStore = useChatRoomStore();
 const {chatConversation} = storeToRefs(chatMessageStore)
 
 // the content of the message.
@@ -258,15 +269,33 @@ const handleClickOutside = (event: Event) => {
 };
 
 // (event) set the draft message equals the content of the text area
-// const handleSetDraft = () => {
-//   const index = getConversationIndex(activeConversation.id);
-//   if (index !== undefined) {
-//     store.conversations[index].draftMessage = newMessage.value;
-//   }
-// };
+const handleSetDraft = () => {
+  if(!chatRoom.value){
+    return;
+  }
+
+  const key = chatRoom.value.roomId;
+  chatRoomDraft.set(key, newMessage.value);
+};
+
+watch(chatRoom, (before, after) => {
+  if(before !== after){
+    if(!chatRoom.value){
+      newMessage.value = "";
+      return;
+    }
+    // console.log("chatRoomDraft ====> %o", chatRoomDraft.get(chatRoom.value.roomId) as string || "")
+    newMessage.value = chatRoomDraft.get(chatRoom.value.roomId) as string || "";
+  }
+})
 
 onMounted(() => {
   // newMessage.value = activeConversation.draftMessage;
+  if(!chatRoom.value){
+    newMessage.value = "";
+    return;
+  }
+  newMessage.value = chatRoomDraft.get(chatRoom.value.roomId) as string || "";
 });
 </script>
 

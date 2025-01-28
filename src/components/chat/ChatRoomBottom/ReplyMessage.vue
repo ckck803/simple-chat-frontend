@@ -27,13 +27,13 @@ import { XCircleIcon } from "@heroicons/vue/24/outline";
 import MessagePreview from "~components/chat/MessagePreview.vue";
 import IconButton from "~ui/inputs/IconButton.vue";
 import SlideTransition from "~ui/transitions/SlideTransition.vue";
-import useChatConversationStore from "~store/useChatConversationStore.ts";
+import useChatRoomStore from "~store/useChatRoomStore.ts";
 import {storeToRefs} from "pinia";
 
 // const store = useStore();
 // const activeConversation = <IConversation>inject("activeConversation");
 
-const chatConversationStore = useChatConversationStore();
+const chatConversationStore = useChatRoomStore();
 const {chatConversation} = storeToRefs(chatConversationStore);
 
 const removeReplyMessage = () => {

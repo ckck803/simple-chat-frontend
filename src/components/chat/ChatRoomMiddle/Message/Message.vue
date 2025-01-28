@@ -49,8 +49,8 @@
           >
           </Typography>
           <Attachments
-              v-if="(props.message.urlList as [])?.length > 0"
-              :urlList="props.message.urlList"
+              v-if="(props.message.fileList! as [])?.length > 0"
+              :fileList="props.message.fileList!"
               :self="props.self"
           />
         </div>
@@ -103,7 +103,7 @@ import {IChatMessage} from "~types/IChatMessage.ts";
 import defaultImage from '~assets/image/default_image.jpg'
 import Attachments from "~components/chat/ChatRoomMiddle/Message/Attachments.vue";
 import MessageContextMenu from "~components/chat/ChatRoomMiddle/Message/MessageContextMenu.vue";
-import useChatConversationStore from "~store/useChatConversationStore.ts";
+import useChatRoomStore from "~store/useChatRoomStore.ts";
 import {storeToRefs} from "pinia";
 
 const tempState = ref("read");
@@ -172,7 +172,7 @@ const selectMode = ref(false);
 const selectAll = ref(false);
 
 
-const chatMessageStore = useChatConversationStore();
+const chatMessageStore = useChatRoomStore();
 // const {messageList} = storeToRefs(chatMessageStore);
 const {chatConversation} = storeToRefs(chatMessageStore);
 

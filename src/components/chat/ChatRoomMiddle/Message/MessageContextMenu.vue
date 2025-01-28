@@ -72,7 +72,7 @@ import {getConversationIndex} from "~utils/utils.ts";
 import DropdownLink from "~ui/navigation/Dropdown/DropdownLink.vue";
 import Dropdown from "~ui/navigation/Dropdown/Dropdown.vue";
 import {IChatMessage} from "~types/IChatMessage.ts";
-import useChatConversationStore from "~store/useChatConversationStore.ts";
+import useChatRoomStore from "~store/useChatRoomStore.ts";
 import {storeToRefs} from "pinia";
 
 const props = defineProps<{
@@ -86,7 +86,7 @@ const props = defineProps<{
   handleDeselectMessage: (messageId: number) => void;
 }>();
 
-const chatMessageStore= useChatConversationStore();
+const chatMessageStore= useChatRoomStore();
 const {chatConversation} = storeToRefs(chatMessageStore);
 
 

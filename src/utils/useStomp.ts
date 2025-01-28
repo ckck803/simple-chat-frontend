@@ -17,13 +17,14 @@ const connect = () => {
 
 // const subscribe = async (roomId: string, messages: { [key: string]: IChatMessage[] }, onMessageReceived:(message: IChatMessage) => void ) => {
 const subscribe = async (roomId: string, messages: Ref<{ [key: string]: IChatMessage[] }>, onMessageReceived:(message: IChatMessage) => void ) => {
-  console.log("subscribe: %o", roomId)
-  console.log(`/sub/chatroom/${roomId}`)
+  // console.log("subscribe: %o", roomId)
+  // console.log(`/sub/chatroom/${roomId}`)
 
   await client.subscribe(`/sub/chatroom/${roomId}`, (res) => {
     const message = JSON.parse(res.body);
     console.log("subscirbe message %o", message)
     messages.value[message.roomId].push(message)
+    console.log("message %o", messages.value[message.roomId])
     onMessageReceived(message)
   })
 }

@@ -70,7 +70,8 @@ async function signup() {
     email: email.value,
   };
   axios.post("/api/signup", param).then((res) => {
-    alert(res.data.body);
+    // alert(res.data.body);
+    alert("회원가입에 성공했습니다.");
     goToSignup();
   });
 }

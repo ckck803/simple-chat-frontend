@@ -1,3 +1,5 @@
+import {IFileInfo} from "~types/IFileInfo.ts";
+
 export interface IChatMessage {
   roomId: string,
   userId: string,
@@ -5,5 +7,7 @@ export interface IChatMessage {
   sendDate: string,
   sendTime: string,
   sender: string,
-  urlList?: []
+  // urlList?: []
+  fileList?: IFileInfo[]
 }
+
