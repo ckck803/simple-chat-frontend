@@ -17,13 +17,13 @@
     <ScaleTransition>
       <div v-show="props.open" class="fixed inset-0 z-10 overflow-y-auto">
         <div
-            v-if="props.startingId"
+            v-if="props.file"
             ref="carousel"
             class="h-full flex flex-col p-5"
         >
           <!--toolbar-->
           <Toolbar
-              :is-image="Boolean(selectedAttachment.type === 'image')"
+              :is-image="Boolean(props.file.fileType === 'image')"
               :handle-close-carousel="handleCloseCarousel"
               :handle-increase-zoom="handleIncreaseZoom"
               :handle-decrease-zoom="handleDecreaseZoom"
@@ -49,22 +49,38 @@
                 class="w-full h-full px-5 flex items-center justify-center overflow-hidden"
             >
               <!--Image-->
+<!--              <img-->
+<!--                  class="w-auto md:max-w-[700px] xs:max-w-[340px] transition-transform duration-300"-->
+<!--                  :style="{ transform: `scale(${zoom})` }"-->
+<!--                  v-if="props.file.fileType === 'image'"-->
+<!--                  :src="getUrl(props.file.fileName)"-->
+<!--                  :key="selectedAttachment.id"-->
+<!--                  :alt="props.file.fileName"-->
+<!--              />-->
+
+
               <img
                   class="w-auto md:max-w-[700px] xs:max-w-[340px] transition-transform duration-300"
                   :style="{ transform: `scale(${zoom})` }"
-                  v-if="selectedAttachment.type === 'image'"
-                  :src="selectedAttachment?.url"
-                  :key="selectedAttachment.id"
-                  :alt="selectedAttachment.name"
+                  v-if="props.file.fileType === 'image'"
+                  :src="getUrl(props.file.fileName)"
+                  :alt="props.file.fileName"
               />
 
               <!--Video-->
+<!--              <VideoPlayer-->
+<!--                  :id="'video-player-' + props.file.fileName"-->
+<!--                  v-if="props.file.fileType === 'video'"-->
+<!--                  :url="getUrl(props.file.fileName)"-->
+<!--                  :thumbnail="getUrl(props.file.thumbnail)"-->
+<!--                  :key="selectedAttachment.id"-->
+<!--              />-->
               <VideoPlayer
-                  :id="'video-player-' + selectedAttachment.id"
-                  v-if="selectedAttachment.type === 'video'"
-                  :url="selectedAttachment.url"
-                  :thumbnail="(selectedAttachment.thumbnail as string)"
-                  :key="selectedAttachment.id"
+                  :id="'video-player-' + props.file.fileName"
+                  v-if="props.file.fileType === 'video'"
+                  :url="getUrl(props.file.fileName)"
+                  :thumbnail="getUrl(props.file.thumbnail)"
+                  :key=1
               />
             </div>
 
@@ -100,10 +116,21 @@ import {IAttachment, IConversation} from "~types/types.ts";
 import {hasAttachments} from "~utils/utils.ts";
 import IconButton from "~ui/inputs/IconButton.vue";
 import Toolbar from "~ui/data-display/Carousel/Toolbar.vue";
+import {IFileInfo} from "~types/IFileInfo.ts";
+// import VideoPlayer from "@src/components/ui/data-display/VideoPlayer.vue";
+
+import VideoPlayer from "~ui/data-display/VideoPlayer.vue";
+
+// const props = defineProps<{
+//   open: boolean;
+//   // file: IFileInfo;
+//   startingId?: number;
+//   closeCarousel: () => void;
+// }>();
 
 const props = defineProps<{
   open: boolean;
-  startingId?: number;
+  file?: IFileInfo;
   closeCarousel: () => void;
 }>();
 
@@ -140,24 +167,24 @@ const attachments = computed(() => {
 });
 
 // the index of the attachment we start from
-const startingIndex = computed(() => {
-  let startingIndex: number | undefined;
-
-  attachments.value.forEach((value, index) => {
-    if (value.id === props.startingId) {
-      startingIndex = index;
-    }
-  });
-
-  return startingIndex;
-});
+// const startingIndex = computed(() => {
+//   let startingIndex: number | undefined;
+//
+//   attachments.value.forEach((value, index) => {
+//     if (value.id === props.startingId) {
+//       startingIndex = index;
+//     }
+//   });
+//
+//   return startingIndex;
+// });
 
 // the selected attachment
-const selectedAttachment = computed(() => {
-  return attachments.value[
-    moved ? (currentIndex.value as number) : (startingIndex.value as number)
-  ];
-});
+// const selectedAttachment = computed(() => {
+//   return attachments.value[
+//     moved ? (currentIndex.value as number) : (startingIndex.value as number)
+//   ];
+// });
 
 // set moved to false and then close modal
 const handleCloseCarousel = () => {
@@ -207,7 +234,7 @@ watch(
   () => props.open,
   () => {
     //  when modal opens make the value of currentIndex equal to the starting index
-    currentIndex.value = startingIndex.value as number;
+    // currentIndex.value = startingIndex.value as number;
 
     // toggle focus when the modal opens
     if (props.open) {
@@ -224,7 +251,7 @@ watch(
 
 onMounted(() => {
   // when first opened set currentIndex to startingIndex.
-  currentIndex.value = startingIndex.value as number;
+  // currentIndex.value = startingIndex.value as number;
   // set the handleCloseOnEscape when mounting the component
   document.addEventListener("keydown", handleCloseOnEscape);
 });
@@ -248,6 +275,10 @@ const handleDecreaseZoom = () => {
     zoom.value -= 0.5;
   }
 };
+const getUrl = (fileName: string) => {
+  return `http://localhost:8080/api/file/${fileName}`
+}
+
 </script>
 
 

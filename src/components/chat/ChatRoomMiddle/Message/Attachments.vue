@@ -11,11 +11,11 @@
         <button
             v-if="file.fileType ==='image'"
             class="outline-none"
-            @click="openCarouselWithAttachment(file.fileName)"
+            @click="openCarouselWithAttachment(file)"
         >
           <div
               v-if="!isNumber(file.fileName, 2, true)"
-              :style="{ backgroundImage: `url(http://localhost:8080/api/file/${file.fileName})` }"
+              :style="{ backgroundImage: `url(${getUrl(file.fileName)})` }"
               class="rounded bg-cover bg-center"
               :class="
               numberOfMedia === 1
@@ -112,6 +112,62 @@
             </div>
           </div>
         </div>
+
+        <!--video-->
+        <button
+            v-if="file.fileType === 'video'"
+            @click="openCarouselWithAttachment(file)"
+            class="overflow-hidden outline-none"
+            :aria-label="numberOfMedia > 2 ? (props.fileList as []).length - 1 + ' more attachments' : file.fileName"
+        >
+          <div
+              v-if="!isNumber(file.fileName, 2, true)"
+              :style="{ backgroundImage: `url(${getUrl(file.thumbnail)})` }"
+              class="rounded bg-cover bg-center"
+              :class="
+                      numberOfMedia === 1
+                        ? ['w-[200px]', 'h-[200px]']
+                        : [
+                            'md:w-[110px]',
+                            'md:h-[100px]',
+                            'xs:w-[100px]',
+                            'xs:h-[95px]',
+                          ]
+                    "
+          >
+            <!--first video-->
+            <div
+                v-if="isNumber(file.fileName, 1)"
+                class="w-full h-full flex justify-center items-center rounded bg-black bg-opacity-20 hover:bg-opacity-10 transition duration-200"
+            >
+                      <span
+                          class="p-3 rounded-full bg-white bg-opacity-40 transition-all duration-200"
+                      >
+                        <PlayIcon class="w-5 h-5 text-white"/>
+                      </span>
+            </div>
+
+            <!--second video-->
+            <div
+                v-else-if="isNumber(file.fileName, 2) && numberOfMedia < 3"
+                class="w-full h-full flex justify-center items-center rounded bg-black bg-opacity-20 hover:bg-opacity-10 transition duration-200"
+            >
+                      <span
+                          class="p-3 rounded-full bg-white bg-opacity-40 transition-all duration-200"
+                      >
+                        <PlayIcon class="w-5 h-5 text-white"/>
+                      </span>
+            </div>
+
+            <!--more videos overlay-->
+            <div
+                v-else-if="isNumber(file.fileName, 2) && numberOfMedia > 2"
+                class="w-full h-full flex items-center justify-center rounded bg-black bg-opacity-40 text-white hover:bg-opacity-10 transition duration-200"
+            >
+              {{ (props.fileList as []).length - 1 }}+
+            </div>
+          </div>
+        </button>
 
         <!--image-->
         <!--        <button-->
@@ -210,12 +266,17 @@
 
       </div>
 
-      <!--carousel modal-->
-      <!--      <Carousel-->
-      <!--          :open="openCarousel"-->
-      <!--          :starting-id="(selectedAttachmentId as number)"-->
-      <!--          :close-carousel="closeCarousel"-->
-      <!--      />-->
+<!--      carousel modal-->
+<!--      <Carousel-->
+<!--          :open="openCarousel"-->
+<!--          :starting-id="(selectedAttachmentId as number)"-->
+<!--          :close-carousel="closeCarousel"-->
+<!--      />-->
+      <Carousel
+          :open="openCarousel"
+          :file="selectedFile"
+          :close-carousel="closeCarousel"
+      />
     </div>
   </div>
 </template>
@@ -287,18 +348,10 @@ onMounted(() => {
 
 const openCarousel: Ref<boolean> = ref(false);
 
-// const selectedAttachmentId: Ref<number | undefined> = ref();
+const selectedFile: Ref<IFileInfo | undefined> = ref();
 
-// open the carousel with the selected index
-// const openCarouselWithAttachment = (attachmentId: number) => {
-//   selectedAttachmentId.value = attachmentId;
-//   openCarousel.value = true;
-// };
-
-const selectedAttachmentId: Ref<string | undefined> = ref();
-
-const openCarouselWithAttachment = (url: string) => {
-  selectedAttachmentId.value = url;
+const openCarouselWithAttachment = (file: IFileInfo) => {
+  selectedFile.value = file;
   openCarousel.value = true;
 };
 
@@ -443,6 +496,10 @@ const downloadFile = async (file: IFileInfo) => {
   } catch (error) {
     console.error("파일 다운로드 실패:", error);
   }
+}
+
+const getUrl = (fileName: string) => {
+  return `http://localhost:8080/api/file/${fileName}`
 }
 
 </script>

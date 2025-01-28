@@ -3,4 +3,5 @@ export interface IFileInfo {
   fileType: string,
   fileDirectory: string
   fileSize: string
+  thumbnail: string
 }
