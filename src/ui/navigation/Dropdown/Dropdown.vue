@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import ScaleTransition from "~ui/transitions/ScaleTransition.vue";
 
 const props = defineProps<{
@@ -45,7 +45,7 @@ const props = defineProps<{
 }>();
 
 // html element containing the dropdown.
-const dropdown = ref();
+// const dropdown = ref();
 
 // (event) close dropdown when typing esc button.
 const handleCloseOnEscape = (event: KeyboardEvent) => {

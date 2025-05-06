@@ -7,8 +7,8 @@ const router = createRouter({
   strict: true
 })
 
-router.beforeEach((to, from, next) => {
-  next();
+router.beforeEach((to, from) => {
+  return true;
 })
 
 export default router;

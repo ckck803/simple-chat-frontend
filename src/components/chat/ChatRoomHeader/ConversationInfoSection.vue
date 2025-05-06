@@ -135,7 +135,7 @@
 // import { activeCall } from "@src/store/defaults";
 // import useStore from "@src/store/store";
 // import { getAvatar, getName } from "@src/utils";
-import { inject, ref } from "vue";
+import { ref } from "vue";
 
 import {
   ChevronLeftIcon,
